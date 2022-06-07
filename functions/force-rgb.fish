@@ -1,4 +1,4 @@
-function fix-monitor-color-depth --description "Force RGB mode for monitor that defaults to YPbPr"
+function force-rgb --description "Force RGB mode for monitor that defaults to YPbPr"
   for plist in /Library/Preferences/com.apple.windowserver.displays.plist ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
     set_color yellow; echo Fixing $plist; set_color normal;
     set --local tmp1 (mktemp)
