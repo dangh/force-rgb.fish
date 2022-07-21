@@ -14,5 +14,5 @@ fisher install dangh/force-rgb.fish
 
 ```sh
 force-rgb
-# reboot your mac
+# reboot your mac, if it doesn't have effect, shutdown and boot again.
 ```
