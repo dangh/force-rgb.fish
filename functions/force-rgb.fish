@@ -8,7 +8,7 @@ function force-rgb --description "Force RGB mode for monitor that defaults to YP
     cp $plist $f1
     plutil -convert json $f1
     jq --argjson LinkDescription '{"Range":1,"BitDepth":8,"EOTF":0,"PixelEncoding":0}' '(. | select(.DisplaySets != null) | .DisplaySets.Configs | .[] | .LinkDescription) |= $LinkDescription' $f1 > $f2 2>/dev/null
-    jq --argjson LinkDescription '{"Range":1,"BitDepth":8,"EOTF":0,"PixelEncoding":0}' '(. | select(.DisplayAnyUserSets != null) | .DisplayAnyUserSets.Configs | .[] | .LinkDescription) |= $LinkDescription' $f2 > $f3 2>/dev/null
+    jq --argjson LinkDescription '{"Range":1,"BitDepth":8,"EOTF":0,"PixelEncoding":0}' '(. | select(.DisplayAnyUserSets != null) | .DisplayAnyUserSets.Configs | .[] | .DisplayConfig | .[] | .LinkDescription) |= $LinkDescription' $f2 > $f3 2>/dev/null
     echo '{}' | jq --argfile f1 $f1 --argfile f3 $f3 'if $f1 == $f3 then empty else null|halt_error(99) end'
     if not test $status -eq 0
       set_color yellow; echo Fixing $plist; set_color normal;
