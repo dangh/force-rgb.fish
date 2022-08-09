@@ -18,14 +18,16 @@ function force-rgb --description "Force RGB mode for monitor that defaults to YP
         if string match --entire --quiet "$HOME/*" $plist
           cp $plist $plist.bak
           cp $f3 $plist
+          chflags uchg $plist
         else
           sudo cp $plist $plist.bak
           sudo cp $f3 $plist
+          sudo chflags uchg $plist
         end
       end
     end
   end
   if test $fixed -gt 0
-    set_color green; echo Done. Reboot your mac to apply changes.; set_color normal;
+    set_color green; echo Done. Log out BEFORE reboot your mac to apply changes.; set_color normal;
   end
 end
