@@ -16,8 +16,10 @@ function force-rgb --description "Force RGB mode for monitor that defaults to YP
       if not set --query _flag_dryrun
         plutil -convert binary1 $f3
         if string match --entire --quiet "$HOME/*" $plist
+          cp $plist $plist.bak
           cp $f3 $plist
         else
+          sudo cp $plist $plist.bak
           sudo cp $f3 $plist
         end
       end
