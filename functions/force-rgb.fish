@@ -1,15 +1,15 @@
-function force-rgb --description "Force RGB mode for monitor that defaults to YPbPr"
-  set --function fixes 0
-  set --function dryrun
+function force-rgb -d "Force RGB mode for monitor that defaults to YPbPr"
+  set -f fixes 0
+  set -f dryrun
   if not isatty stdin
-    read --local answer
+    read -l answer
     if test "$answer" = y
-      set --erase dryrun
+      set -e dryrun
     end
   end
   for plist in /Library/Preferences/com.apple.windowserver.displays.plist ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
-    set --local original (mktemp)
-    set --local patched (mktemp)
+    set -l original (mktemp)
+    set -l patched (mktemp)
     cp $plist $original
     plutil -convert json $original
     jq --argjson LinkDescription '{"Range":1,"BitDepth":8,"EOTF":0,"PixelEncoding":0}' '( .. | select(.CurrentInfo?) | .LinkDescription ) |= $LinkDescription' $original > $patched 2>/dev/null
@@ -17,7 +17,7 @@ function force-rgb --description "Force RGB mode for monitor that defaults to YP
     if not test $status -eq 0
 
       set_color yellow
-      if set --query --function dryrun
+      if set -q -f dryrun
         echo $plist need to be fixed
         diff --side-by-side (jq '.' $original | psub) $patched
       else
@@ -27,9 +27,9 @@ function force-rgb --description "Force RGB mode for monitor that defaults to YP
 
       set fixes (math $fixes + 1)
 
-      if not set --query --function dryrun
+      if not set -q -f dryrun
         plutil -convert binary1 $patched
-        if string match --entire --quiet "$HOME/*" $plist
+        if string match -e -q "$HOME/*" $plist
           cp $plist $plist.bak
           chflags nouchg $plist
           cp $patched $plist
@@ -46,7 +46,7 @@ function force-rgb --description "Force RGB mode for monitor that defaults to YP
 
   set_color green
   if test $fixes -gt 0
-    if set --query --function dryrun
+    if set -q -f dryrun
       echo $fixes files need to be fixed.
     else
      echo $fixes files fixed. Log out BEFORE reboot your Mac to apply changes.
