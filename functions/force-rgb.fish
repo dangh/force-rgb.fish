@@ -15,15 +15,19 @@ function force-rgb -d "Force RGB mode for monitor that defaults to YPbPr"
     jq --argjson LinkDescription '{"Range":1,"BitDepth":8,"EOTF":0,"PixelEncoding":0}' '( .. | select(.CurrentInfo?) | .LinkDescription ) |= $LinkDescription' $original > $patched 2>/dev/null
     echo 'null' | jq --argfile original $original --argfile patched $patched 'if $original != $patched then halt_error(99) else empty end'
     if not test $status -eq 0
+      set -l filename \x1b\[1m$plist\x1b\[22m
 
-      set_color yellow
       if set -q -f dryrun
-        echo $plist need to be fixed
-        diff --side-by-side (jq '.' $original | psub) $patched
+        set_color magenta
+        echo $filename need to be fixed
+        set_color normal
+        diff --color=always --side-by-side (jq -S '.' $original | psub) (jq -S '.' $patched | psub)
       else
-        echo Fixing $plist
+        set_color magenta
+        echo Fixing $filename
+        set_color normal
       end
-      set_color normal
+      echo
 
       set fixes (math $fixes + 1)
 
@@ -44,7 +48,7 @@ function force-rgb -d "Force RGB mode for monitor that defaults to YPbPr"
     end
   end
 
-  set_color green
+  set_color magenta
   if test $fixes -gt 0
     if set -q -f dryrun
       echo $fixes files need to be fixed.
