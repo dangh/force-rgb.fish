@@ -13,7 +13,7 @@ function force-rgb -d "Force RGB mode for monitor that defaults to YPbPr"
     cp $plist $original
     plutil -convert json $original
     jq --argjson LinkDescription '{"Range":1,"BitDepth":8,"EOTF":0,"PixelEncoding":0}' '( .. | select(.CurrentInfo?) | .LinkDescription ) |= $LinkDescription' $original > $patched 2>/dev/null
-    echo 'null' | jq --argfile original $original --argfile patched $patched 'if $original != $patched then halt_error(99) else empty end'
+    echo 'null' | jq --slurpfile original $original --slurpfile patched $patched 'if $original != $patched then halt_error(99) else empty end'
     if not test $status -eq 0
       set -l filename \x1b\[1m$plist\x1b\[22m
 
